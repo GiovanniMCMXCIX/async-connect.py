@@ -9,7 +9,7 @@ A basic wrapper for the Monstercat Connect API.
 :license: MIT, see LICENSE for more details.
 """
 
-__title__ = 'async-connect'
+__title__ = 'async_connect'
 __author__ = 'GiovanniMCMXCIX'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2017 GiovanniMCMXCIX'
