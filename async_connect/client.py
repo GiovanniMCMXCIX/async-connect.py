@@ -42,6 +42,7 @@ class Client:
         self.loop = asyncio.get_event_loop() if not loop else loop
         self.http = HTTPClient(loop=self.loop)
         self.browse_filters = self.loop.run_until_complete(self.http.request('GET', self.http.BROWSE_FILTERS))
+        self._is_closed = False
 
     async def sign_in(self, email: str, password: str, token: int = None):
         """Logs in the client with the specified credentials.
@@ -71,8 +72,17 @@ class Client:
         return await self.http.is_signed_in()
 
     async def sign_out(self):
-        """Logs out of Monstercat Connect."""
+        """Logs out of Monstercat Connect and closes all connections."""
         await self.http.sign_out()
+        await self.close()
+
+    async def close(self):
+        """Closes all connections."""
+        if self._is_closed:
+            return
+        else:
+            await self.http.close()
+            self._is_closed = True
 
     async def create_playlist(self, name: str, *, public: bool = False, entries: List[Tuple[Track, Release]] = None) -> Playlist:
         """Creates a playlist.
