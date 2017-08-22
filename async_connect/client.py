@@ -45,7 +45,9 @@ class Client:
         self._is_closed = False
 
     async def sign_in(self, email: str, password: str, token: int = None):
-        """Logs in the client with the specified credentials.
+        """This function is a coroutine.
+
+        Logs in the client with the specified credentials.
 
         Parameters
         ----------
@@ -66,18 +68,23 @@ class Client:
         else:
             await self.http.two_feature_sign_in(email, password, token)
 
-    @property
-    async def is_signed_in(self):
-        """bool: Indicates if the client has logged in successfully."""
+    async def is_signed_in(self) -> bool:
+        """This function is a coroutine.
+
+        Indicates if the client has logged in successfully."""
         return await self.http.is_signed_in()
 
     async def sign_out(self):
-        """Logs out of Monstercat Connect and closes all connections."""
+        """This function is a coroutine.
+
+        Logs out of Monstercat Connect and closes all connections."""
         await self.http.sign_out()
         await self.close()
 
     async def close(self):
-        """Closes all connections."""
+        """This function is a coroutine.
+
+        Closes all connections."""
         if self._is_closed:
             return
         else:
@@ -85,7 +92,9 @@ class Client:
             self._is_closed = True
 
     async def create_playlist(self, name: str, *, public: bool = False, entries: List[Tuple[Track, Release]] = None) -> Playlist:
-        """Creates a playlist.
+        """This function is a coroutine.
+
+        Creates a playlist.
 
         Parameters
         ----------
@@ -102,6 +111,11 @@ class Client:
            Some of the given entries are not valid.
         Forbidden
            The client isn't signed in.
+
+        Returns
+        -------
+        Playlist
+            The playlist that was created.
         """
         if entries:
             json_entries = []
@@ -116,7 +130,9 @@ class Client:
             return Playlist(**await self.http.create_playlist(name=name, public=public))
 
     async def edit_playlist(self, playlist: Playlist, *, name: str = None, public: bool = False) -> Playlist:
-        """Edits a playlist.
+        """This function is a coroutine.
+
+        Edits a playlist.
 
         Parameters
         ----------
@@ -131,11 +147,18 @@ class Client:
         ------
         Forbidden
             The client isn't signed in/ You don't own the playlist.
+
+        Returns
+        -------
+        Playlist
+            The playlist that was edited.
         """
         return Playlist(**await self.http.edit_playlist(playlist_id=playlist.id, name=name, public=public))
 
     async def edit_profile(self, *, name: str = None, real_name: str = None, location: str = None, password: str = None):
-        """Edits the current profile of the client.
+        """This function is a coroutine.
+
+        Edits the current profile of the client.
 
         Parameters
         ----------
@@ -153,10 +176,12 @@ class Client:
         Forbidden
             The client isn't signed in.
         """
-        self.http.edit_profile(name=name, real_name=real_name, location=location, password=password)
+        await self.http.edit_profile(name=name, real_name=real_name, location=location, password=password)
 
     async def add_playlist_track(self, playlist: Playlist, track: Track, release: Release) -> Playlist:
-        """Adds a track to a playlist's tracklist
+        """This function is a coroutine.
+
+        Adds a track to a playlist's tracklist
 
         Parameters
         ----------
@@ -172,6 +197,11 @@ class Client:
            Some of the given track, release combination is not valid.
         Forbidden
            The client isn't signed in/ You don't own the given playlist.
+
+        Returns
+        -------
+        Playlist
+            The playlist with the track that was added.
         """
         if find(lambda a: a.id == release.id, track.albums):
             return Playlist(**await self.http.add_playlist_track(playlist_id=playlist.id, track_id=track.id, release_id=release.id))
@@ -179,7 +209,9 @@ class Client:
             raise ValueError(f'The track "{track}" is not in the release\'s "{release}" track list.')
 
     async def add_playlist_tracks(self, playlist: Playlist, entries: List[Tuple[Track, Release]]) -> Playlist:
-        """Adds a track to a playlist's tracklist
+        """This function is a coroutine.
+
+        Adds a track to a playlist's tracklist
 
         Parameters
         ----------
@@ -194,6 +226,11 @@ class Client:
            Some of the given track, release combination is not valid.
         Forbidden
            The client isn't signed in/ You don't own the given playlist.
+
+        Returns
+        -------
+        Playlist
+            The playlist with the tracks that were added.
         """
         json_entries = []
         for entry in entries:
@@ -204,7 +241,9 @@ class Client:
         return Playlist(**await self.http.add_playlist_tracks(playlist_id=playlist.id, entries=json_entries))
 
     async def add_reddit_username(self, username: str):
-        """Adds the reddit username to the current profile of the client.
+        """This function is a coroutine.
+
+        Adds the reddit username to the current profile of the client.
 
         Parameters
         ----------
@@ -219,7 +258,9 @@ class Client:
         await self.http.add_reddit_username(username)
 
     async def delete_playlist(self, playlist: Playlist):
-        """Deletes a playlist.
+        """This function is a coroutine.
+
+        Deletes a playlist.
 
         Parameters
         ----------
@@ -234,7 +275,9 @@ class Client:
         await self.http.delete_playlist(playlist.id)
 
     async def delete_playlist_track(self, playlist: Playlist, track: Track) -> Playlist:
-        """Deletes a track from a playlist's tracklist.
+        """This function is a coroutine.
+
+        Deletes a track from a playlist's tracklist.
 
         Parameters
         ----------
@@ -247,11 +290,18 @@ class Client:
         ------
         Forbidden
             The client isn't signed in/ You don't own the given playlist.
+
+        Returns
+        -------
+        Playlist
+            The playlist with the track that was deleted.
         """
         return Playlist(**await self.http.delete_playlist_track(playlist_id=playlist.id, track_id=track.id))
 
     async def get_discord_invite(self) -> str:
-        """Gets an invite for the gold discord channel on the monstercat discord guild.
+        """This function is a coroutine.
+
+        Gets an invite for the gold discord channel on the monstercat discord guild.
         The client needs gold subscription in order to get the invite for that channel.
 
         Raises
@@ -262,7 +312,9 @@ class Client:
         return await self.http.get_discord_invite()
 
     async def get_release(self, catalog_id: str) -> Release:
-        """Returns a release with the given ID.
+        """This function is a coroutine.
+
+        Returns a release with the given ID.
 
         Parameters
         ----------
@@ -273,11 +325,18 @@ class Client:
         ------
         NotFound
             The client couldn't get the release.
+
+        Returns
+        -------
+        Release
+            Release that was requested with the given ID/catalog ID.
         """
         return Release(**await self.http.get_release(catalog_id))
 
     async def get_track(self, track_id: str) -> Track:
-        """Returns a track with the given ID.
+        """This function is a coroutine.
+
+        Returns a track with the given ID.
 
         Parameters
         ----------
@@ -288,11 +347,19 @@ class Client:
         ------
         NotFound
             The client couldn't get the track.
+
+
+        Returns
+        -------
+        Track
+            Track that was requested with the given ID.
         """
         return Track(**await self.http.get_track(track_id))
 
     async def get_artist(self, artist_id: str) -> Artist:
-        """Returns a artist with the given ID.
+        """This function is a coroutine.
+
+        Returns a artist with the given ID.
 
         Parameters
         ----------
@@ -303,11 +370,18 @@ class Client:
         ------
         NotFound
             The client couldn't get the artist.
+
+        Returns
+        -------
+        Artist
+            Artist that was requested with the given ID/vanity uri.
         """
         return Artist(**await self.http.get_artist(artist_id))
 
     async def get_playlist(self, playlist_id: str) -> Playlist:
-        """Returns a playlist with the given ID.
+        """This function is a coroutine.
+
+        Returns a playlist with the given ID.
 
         Parameters
         ----------
@@ -320,11 +394,18 @@ class Client:
             The client can't access a private playlist.
         NotFound
             The client couldn't get the playlist.
+
+        Returns
+        -------
+        Playlist
+            Playlist that was requested with the given ID.
         """
         return Playlist(**await self.http.get_playlist(playlist_id))
 
     async def get_all_releases(self, *, singles: bool = True, eps: bool = True, albums: bool = True, podcasts: bool = False, limit: int = None, skip: int = None) -> List[Release]:
-        """Retrieves every release the client can access.
+        """This function is a coroutine.
+
+        Retrieves every release the client can access.
 
         Parameters
         ----------
@@ -340,6 +421,11 @@ class Client:
            The limit for how many tracks are supposed to be shown.
         skip: int
            Number of tracks that are skipped to be shown.
+
+        Returns
+        -------
+        List[Release]
+            All the singles/eps/albums/podcasts (depends how you set the parameters) that are available.
         """
         releases = []
         data = await self.http.get_all_releases(singles=singles, eps=eps, albums=albums, podcasts=podcasts, limit=limit, skip=skip)
@@ -348,7 +434,9 @@ class Client:
         return releases
 
     async def get_all_tracks(self, *, limit: int = None, skip: int = None) -> List[Track]:
-        """Retrieves every track the client can access.
+        """This function is a coroutine.
+
+        Retrieves every track the client can access.
 
         Parameters
         ----------
@@ -356,6 +444,11 @@ class Client:
            Limit for how many tracks are supposed to be shown.
         skip: int
            Number of tracks that are skipped to be shown.
+
+        Returns
+        -------
+        List[Track]
+            All the tracks that are available.
         """
         tracks = []
         data = await self.http.get_all_tracks(limit=limit, skip=skip)
@@ -364,7 +457,9 @@ class Client:
         return tracks
 
     async def get_all_artists(self, *, year: int = None, limit: int = None, skip: int = None) -> List[Artist]:
-        """Retrieves every artist the client can access.
+        """This function is a coroutine.
+
+        Retrieves every artist the client can access.
 
         Parameters
         ----------
@@ -374,6 +469,11 @@ class Client:
            Limit for how many artists are supposed to be shown.
         skip: int
            Number of artists that are skipped to be shown.
+
+        Returns
+        -------
+        List[Artist]
+            All the artists that are available.
         """
         artists = []
         data = await self.http.get_all_artists(year=year, limit=limit, skip=skip)
@@ -382,12 +482,26 @@ class Client:
         return artists
 
     async def get_all_playlists(self, *, limit: int = None, skip: int = None) -> List[Playlist]:
-        """Retrieves every playlist the client can access.
+        """This function is a coroutine.
+
+        Retrieves every playlist the client can access.
+
+        Parameters
+        ----------
+        limit: int
+           Limit for how many playlists are supposed to be shown.
+        skip: int
+           Number of playlists that are skipped to be shown.
 
         Raises
         ------
         Unauthorized
             The client isn't signed in.
+
+        Returns
+        -------
+        List[Playlist]
+           All the playlists that the account has.
         """
         playlists = []
         data = await self.http.get_all_playlists(limit=limit, skip=skip)
@@ -397,7 +511,8 @@ class Client:
 
     async def get_browse_entries(self, *, types: List[str] = None, genres: List[str] = None, tags: List[str] = None, limit: int = None, skip: int = None) -> List[BrowseEntry]:
         # I can't think of a better way to name this function...
-        """
+        """This function is a coroutine.
+
         Check `connect.Client.browse_filters` for filters that are needed to be used on the function's parameters.
 
         Parameters
@@ -417,6 +532,11 @@ class Client:
         ------
         NotFound
             The client couldn't find any releases.
+
+        Returns
+        -------
+        List[BrowseEntry]
+            List of browse entries that the API could find with the given filters.
         """
         entries = []
         data = await self.http.get_browse_entries(types=types, genres=genres, tags=tags, limit=limit, skip=skip)
@@ -428,7 +548,9 @@ class Client:
             return entries
 
     async def search_release(self, term: str, *, limit: int = None, skip: int = None) -> List[Release]:
-        """Searches for a release.
+        """This function is a coroutine.
+
+        Searches for a release.
 
         Parameters
         ----------
@@ -443,6 +565,11 @@ class Client:
         ------
         NotFound
             The client couldn't find any releases.
+
+        Returns
+        -------
+        List[Release]
+            List of releases that the API could find.
         """
         releases = []
         data = await self.http.request('GET', f'{self.http.RELEASE}?fuzzyOr=title,{quote(term)},renderedArtists,{quote(term)}&limit={limit}&skip={skip}')
@@ -454,7 +581,9 @@ class Client:
             return releases
 
     async def search_release_advanced(self, title: str, artists: str, *, limit: int = None, skip: int = None) -> List[Release]:
-        """Searches for a release in a more advanced way.
+        """This function is a coroutine.
+
+        Searches for a release in a more advanced way.
 
         Parameters
         ----------
@@ -471,6 +600,11 @@ class Client:
         ------
         NotFound
             The client couldn't find any releases.
+
+        Returns
+        -------
+        List[Release]
+            List of releases that the API could find.
         """
         releases = []
         data = await self.http.request('GET', f'{self.http.RELEASE}?fuzzy=title,{quote(title)},renderedArtists,{quote(artists)}&limit={limit}&skip={skip}')
@@ -482,7 +616,9 @@ class Client:
             return releases
 
     async def search_track(self, term: str, *, limit: int = None, skip: int = None) -> List[Track]:
-        """Searches for a track.
+        """This function is a coroutine.
+
+        Searches for a track.
 
         Parameters
         ----------
@@ -497,6 +633,11 @@ class Client:
         ------
         NotFound
             The client couldn't find any tracks.
+
+        Returns
+        -------
+        List[Track]
+            List of tracks that the API could find.
         """
         tracks = []
         data = await self.http.request('GET', f'{self.http.TRACK}?fuzzyOr=title,{quote(term)},artistsTitle,{quote(term)}&limit={limit}&skip={skip}')
@@ -508,7 +649,9 @@ class Client:
             return tracks
 
     async def search_track_advanced(self, title: str, artists: str, *, limit: int = None, skip: int = None) -> List[Track]:
-        """Searches for a track in a more advanced way.
+        """This function is a coroutine.
+
+        Searches for a track in a more advanced way.
 
         Parameters
         ----------
@@ -525,6 +668,11 @@ class Client:
         ------
         NotFound
             The client couldn't find any tracks.
+
+        Returns
+        -------
+        List[Track]
+            List of tracks that the API could find.
         """
         tracks = []
         data = await self.http.request('GET', f'{self.http.TRACK}?fuzzy=title,{quote(title)},artistsTitle,{quote(artists)}&limit={limit}&skip={skip}')
@@ -536,7 +684,9 @@ class Client:
             return tracks
 
     async def search_artist(self, term: str, *, year: int = None, limit: int = None, skip: int = None) -> List[Artist]:
-        """Searches for a artist.
+        """This function is a coroutine.
+
+        Searches for a artist.
 
         Parameters
         ----------
@@ -553,6 +703,11 @@ class Client:
         ------
         NotFound
             The client couldn't find any artists.
+
+        Returns
+        -------
+        List[Artist]
+            List of artists that the API could find.
         """
         artists = []
         base = f'{self.http.ARTIST}?limit={limit}&skip={skip}&fuzzyOr=name,{quote(term)}'
@@ -567,7 +722,9 @@ class Client:
             return artists
 
     async def search_playlist(self, term: str, *, limit: int = None, skip: int = None) -> List[Playlist]:
-        """Searches for a playlist.
+        """This function is a coroutine.
+
+        Searches for a playlist.
 
         Parameters
         ----------
@@ -584,6 +741,11 @@ class Client:
             The client isn't signed in.
         NotFound
             The client couldn't find any playlists.
+
+        Returns
+        -------
+        List[Playlist]
+            List of playlists that the API could find.
         """
         playlists = []
         data = await self.http.request('GET', f'{self.http.PLAYLIST}?fuzzyOr=name,{quote(term)}&limit={limit}&skip={skip}')

@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages
+import sys
 import re
 
 with open('requirements.txt') as f:
@@ -9,6 +10,11 @@ with open('async_connect/__init__.py') as f:
 
 with open('README.rst') as f:
     readme = f.read()
+
+if sys.version_info[1] == 6:
+    test_require = ['uvloop>=0.8.0', 'ujson>=1.35']
+else:
+    test_require = ['ujson>=1.35']
 
 setup(name='async-connect.py',
       author='GiovanniMCMXCIX',
@@ -23,6 +29,7 @@ setup(name='async-connect.py',
       install_requires=requirements,
       extras_require={'performance': ['uvloop>=0.8.0', 'ujson>=1.35']},
       test_suite='tests',
+      tests_require=test_require,
       classifiers=[
           'Development Status :: 4 - Beta',
           'License :: OSI Approved :: MIT License',

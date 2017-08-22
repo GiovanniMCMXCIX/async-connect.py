@@ -69,7 +69,9 @@ class Playlist:
         return self.name
 
     async def tracks(self) -> List['PlaylistEntry']:
-        """Returns a list of connect.playlist.PlaylistEntry items."""
+        """This function is a coroutine.
+
+        Returns a list of connect.playlist.PlaylistEntry items."""
         if self._tracks:
             return list(self._tracks.values())
         else:
@@ -104,7 +106,7 @@ class PlaylistEntry(Track):
         The track genre.
     genres: List[str]
         It usually returns a list with one item that is the same with :attr:`connect.Track.genre`
-    release: :class:`release.ReleaseEntry`
+    release: connect.release.ReleaseEntry
         Release that the playlist entry is a part of.
     tags: List[str]
         The track tags.

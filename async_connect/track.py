@@ -99,11 +99,11 @@ class Track:
 
     @property
     def albums(self):
-        """List[:class:`release.Album`]: A list of Albums that this track is a part of."""
+        """A list of Albums that this track is a part of."""
         return list(self._albums.values())
 
     def get_artists(self) -> List[ArtistEntry]:
-        """List[:class:`artist.ArtistEntry`]: A list of artists that are featured."""
+        """A list of artists that are featured."""
         return list(self._artists.values())
 
     def _add_album(self, album):
@@ -141,10 +141,10 @@ class BrowseEntry(Track):
         The track genre.
     genres: List[str]
         It usually returns a list with one item that is the same with :attr:`connect.Track.genre`.
-    release: :class:`Release`
-
-    albums: :class:`release.Album`
-
+    release: connect.Release
+        Release that this entry is a part of
+    albums: connect.release.Album
+        Album that this entry is a part of
     tags: List[str]
         The track tags.
     is_downloadable: bool

@@ -26,6 +26,7 @@ SOFTWARE.
 
 from .http import HTTPClient
 from .release import Release
+from typing import List
 
 
 class Artist:
@@ -79,8 +80,10 @@ class Artist:
     def _add_release(self, release):
         self._releases[release.id] = release
 
-    async def releases(self) -> list:
-        """List[:class:`Release`]: A list of the artist's releases or appearances."""
+    async def releases(self) -> List[Release]:
+        """This function is a coroutine.
+
+        Returns a list of the artist's releases or appearances."""
         if self._releases:
             return list(self._releases.values())
         else:
