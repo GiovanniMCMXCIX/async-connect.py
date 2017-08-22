@@ -61,8 +61,8 @@ class Track:
     """
 
     __slots__ = [
-        'id', 'artists', 'title', 'duration', 'bpm', 'genre', 'genres', 'tags', 'is_downloadable', 'is_streamable',
-        'in_early_access', 'is_free', '_albums_raw', '_artists_raw', '_albums', '_artists'
+        'id', 'artists', 'title', 'duration', 'bpm', 'genre', 'genres', 'tags', 'is_downloadable', 'is_streamable', 'in_early_access',
+        'is_free', '_albums_raw', '_artists_raw', '_featuring_raw', '_remixers_raw', '_albums', '_artists', '_featuring', '_remixers'
     ]
 
     def __init__(self, **kwargs):
@@ -82,8 +82,12 @@ class Track:
         self.is_free = kwargs.pop('freeDownloadForUsers', None)
         self._albums_raw = kwargs.pop('albums')
         self._artists_raw = kwargs.pop('artists')
+        self._featuring_raw = kwargs.pop('featuring')
+        self._remixers_raw = kwargs.pop('remixers')
         self._albums = {}
         self._artists = {}
+        self._featuring = {}
+        self._remixers = {}
         self._from_data()
 
     def __eq__(self, other):
@@ -103,23 +107,37 @@ class Track:
         return list(self._albums.values())
 
     def get_artists(self) -> List[ArtistEntry]:
-        """A list of artists that are featured."""
+        """A list of artists that composed the track."""
         return list(self._artists.values())
 
-    def _add_album(self, album):
-        self._albums[album.id] = album
+    def get_featuring_artists(self) -> List[ArtistEntry]:
+        """A list of artists that are featured on this track."""
+        return list(self._featuring.values())
 
-    def _add_artist(self, artist):
-        self._artists[artist.id] = artist
+    def get_remixers(self) -> List[ArtistEntry]:
+        """A list of artists that remixed this track"""
+        return list(self._remixers.values())
+
+    @staticmethod
+    def _add_to_dict(class_used, dict_to_add):
+        dict_to_add[class_used.id] = class_used
 
     def _from_data(self):
         for data in self._albums_raw:
-            release = Album(**data)
-            self._add_album(release)
+            album = Album(**data)
+            self._add_to_dict(album, self._albums)
 
         for data in self._artists_raw:
             artist = ArtistEntry(**data)
-            self._add_artist(artist)
+            self._add_to_dict(artist, self._artists)
+
+        for data in self._featuring_raw:
+            artist = ArtistEntry(**data)
+            self._add_to_dict(artist, self._featuring)
+
+        for data in self._remixers_raw:
+            artist = ArtistEntry(**data)
+            self._add_to_dict(artist, self._remixers)
 
 
 class BrowseEntry(Track):
@@ -142,9 +160,9 @@ class BrowseEntry(Track):
     genres: List[str]
         It usually returns a list with one item that is the same with :attr:`connect.Track.genre`.
     release: connect.Release
-        Release that this entry is a part of
+        Release that this entry is a part of.
     albums: connect.release.Album
-        Album that this entry is a part of
+        Album that this entry is a part of.
     tags: List[str]
         The track tags.
     is_downloadable: bool
@@ -160,7 +178,6 @@ class BrowseEntry(Track):
     __slots__ = ['release', '_albums', '_albums_raw']
 
     def __init__(self, **kwargs):
-        del self._add_album
         self.release = Release(**kwargs.pop('release'))
         self._albums = self._albums_raw = Album(**kwargs.pop('albums'))
         super().__init__(**kwargs)
@@ -172,4 +189,12 @@ class BrowseEntry(Track):
     def _from_data(self):
         for data in self._artists_raw:
             artist = ArtistEntry(**data)
-            self._add_artist(artist)
+            self._add_to_dict(artist, self._artists)
+
+        for data in self._featuring_raw:
+            artist = ArtistEntry(**data)
+            self._add_to_dict(artist, self._featuring)
+
+        for data in self._remixers_raw:
+            artist = ArtistEntry(**data)
+            self._add_to_dict(artist, self._remixers)

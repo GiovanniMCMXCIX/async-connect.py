@@ -76,6 +76,8 @@ class HTTPClient:
                 data = json.loads(text)
             except json.decoder.JSONDecodeError:
                 data = {'message': text} if text else None
+            except ValueError:
+                data = {'message': text} if text else None
 
             if 300 > response.status >= 200:
                 return data
