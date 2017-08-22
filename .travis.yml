@@ -8,4 +8,7 @@ python:
   - '3.6-dev'
   - 'nightly'
 
+install:
+  - 'python -m pip install -U setuptools aiohttp ujson uvloop'
+
 script: 'python setup.py test'

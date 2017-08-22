@@ -26,20 +26,15 @@ SOFTWARE.
 
 import async_connect as connect
 import unittest
-import sys
+import asyncio
+import uvloop
 
 
 class TestGetAllCatalog(unittest.TestCase):
     def setUp(self):
-        if sys.version_info[1] == 6:
-            import asyncio
-            import uvloop
-            asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-            self.loop = asyncio.get_event_loop()
-            self.connect = connect.Client(loop=self.loop)
-        else:
-            self.connect = connect.Client()
-            self.loop = self.connect.loop
+        asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+        self.loop = asyncio.get_event_loop()
+        self.connect = connect.Client(loop=self.loop)
 
     def test_release(self):
         async def test():
