@@ -13,7 +13,7 @@ __title__ = 'async_connect'
 __author__ = 'GiovanniMCMXCIX'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2017 GiovanniMCMXCIX'
-__version__ = '0.1.0a1'
+__version__ = '0.1.0rc1'
 
 from .errors import *
 from .client import Client

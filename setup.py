@@ -23,6 +23,7 @@ setup(name='async-connect.py',
       install_requires=requirements,
       extras_require={'performance': ['uvloop>=0.8.0']},
       test_suite='tests',
+      tests_require=['uvloop>=0.8.0'],
       classifiers=[
           'Development Status :: 4 - Beta',
           'License :: OSI Approved :: MIT License',
