@@ -12,9 +12,9 @@ with open('README.rst') as f:
     readme = f.read()
 
 if sys.version_info[1] == 6:
-    test_require = ['uvloop>=0.8.0']
+    test_require = ['uvloop>=0.8.0', 'ujson>=1.35']
 else:
-    test_require = []
+    test_require = ['ujson>=1.35']
 
 setup(name='async-connect.py',
       author='GiovanniMCMXCIX',
@@ -27,7 +27,7 @@ setup(name='async-connect.py',
       long_description=readme,
       include_package_data=True,
       install_requires=requirements,
-      extras_require={'performance': ['uvloop>=0.8.0']},
+      extras_require={'performance': ['uvloop>=0.8.0', 'ujson>=1.35']},
       test_suite='tests',
       tests_require=test_require,
       classifiers=[

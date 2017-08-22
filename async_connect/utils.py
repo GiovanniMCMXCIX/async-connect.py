@@ -25,8 +25,12 @@ SOFTWARE.
 """
 
 import re
-import json
 import datetime
+
+try:
+    import ujson as json
+except ImportError:
+    import json
 
 
 class DownloadLinkGenerator:

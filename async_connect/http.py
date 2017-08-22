@@ -26,9 +26,13 @@ SOFTWARE.
 
 import aiohttp
 import asyncio
-import json
 import sys
 import re
+
+try:
+    import ujson as json
+except ImportError:
+    import json
 
 from .errors import HTTPSException, Unauthorized, Forbidden, NotFound
 from . import utils, __version__
@@ -95,6 +99,11 @@ class HTTPClient:
                     else:
                         raise error(json.loads(text).pop('message', 'Unknown error'))
                 except json.decoder.JSONDecodeError:
+                    if use_resp:
+                        raise error({'message': text} if text else 'Unknown error', response)
+                    else:
+                        raise error({'message': text} if text else 'Unknown error')
+                except ValueError:
                     if use_resp:
                         raise error({'message': text} if text else 'Unknown error', response)
                     else:
