@@ -47,7 +47,7 @@ You can install it using the following command:
 
 Note for using `uvloop` on async-connect.py you need to parse it to `connect.Client()` like so:
 
-.. code:: sh
+.. code:: py
 
     import asyncio
     import uvloop
@@ -62,7 +62,7 @@ Note for using `uvloop` on async-connect.py you need to parse it to `connect.Cli
 Example
 -------
 
-.. code:: sh
+.. code:: py
 
     import async_connect as connect
 
