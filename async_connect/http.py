@@ -90,7 +90,7 @@ class HTTPClient:
             else:
                 raise HTTPSException(data.pop('message', 'Unknown error'), response)
 
-    async def download(self, url, path, **kwargs):
+    async def download(self, url, path, chunk_size=4096, **kwargs):
         kwargs['headers'] = {'User-Agent': self.user_agent}
         async with self.session.request('GET', url, **kwargs) as response:
             async def raise_error(error, resp, use_resp=False):
@@ -117,7 +117,7 @@ class HTTPClient:
                     filename = str.replace(re.findall("filename=(.+)", response.headers['content-disposition'])[0], "\"", "")
                 with open(f'{path}/{filename}', 'wb') as file:
                     while True:
-                        chunk = await response.content.read(4096)
+                        chunk = await response.content.read(chunk_size)
                         if not chunk:
                             break
                         file.write(chunk)
@@ -211,16 +211,16 @@ class HTTPClient:
         playlist = await self.get_playlist(playlist_id)
         track = [item for item in playlist['tracks'] if item['trackId'] == track_id][0]
         del playlist['tracks'][playlist['tracks'].index(track)]
-        return await self.request('POST', f'{self.PLAYLIST}/{playlist_id}', json=playlist)
+        return await self.request('PUT', f'{self.PLAYLIST}/{playlist_id}', json=playlist)
 
-    async def download_release(self, album_id, path, audio_format):
-        return await self.download(self.download_link_gen.release(album_id, audio_format), path)
+    async def download_release(self, album_id, path, audio_format, chunk_size=8192):
+        return await self.download(self.download_link_gen.release(album_id, audio_format), path, chunk_size=chunk_size)
 
-    async def download_track(self, album_id, track_id, path, audio_format):
-        return await self.download(self.download_link_gen.track(album_id, track_id, audio_format), path)
+    async def download_track(self, album_id, track_id, path, audio_format, chunk_size=8192):
+        return await self.download(self.download_link_gen.track(album_id, track_id, audio_format), path, chunk_size=chunk_size)
 
-    async def download_playlist(self, playlist_id, page, path, audio_format):
-        return await self.download(self.download_link_gen.playlist(playlist_id, audio_format, page), path)
+    async def download_playlist(self, playlist_id, page, path, audio_format, chunk_size=8192):
+        return await self.download(self.download_link_gen.playlist(playlist_id, audio_format, page), path, chunk_size=chunk_size)
 
     async def get_self(self):
         return await self.request('GET', self.SELF)

@@ -27,25 +27,25 @@ To install the development version, do the following:
 
 .. code:: sh
 
-    python3 -m pip install -U https://github.com/GiovanniMCMXCIX/async-connect.py/archive/master.zip
+    python3 -m pip install -U https://github.com/GiovanniMCMXCIX/async-connect.py/archive/master.zip#egg=async-connect.py[performance]
 
 Requirements
 ------------
 
-- Python 3.6+
-- `aiohttp` library
+* Python 3.6+
+* ``aiohttp`` library
 
 Extra Requirements
 ------------------
 
-This library contains an extra requirement that is name `performance` in other the library to work faster.
+This library contains an extra requirement that is name ``performance`` in other the library to work faster.
 You can install it using the following command:
 
 .. code:: sh
 
-    python3 -m pip install -U async-connect.py#egg=async-connect.py[performance]
+    python3 -m pip install -U async-connect.py[performance]
 
-Note for using `uvloop` on async-connect.py you need to parse it to `connect.Client()` like so:
+Note for using ``uvloop`` on async-connect.py you need to parse it to ``connect.Client()`` like so:
 
 .. code:: py
 
