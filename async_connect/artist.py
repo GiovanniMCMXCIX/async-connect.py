@@ -88,11 +88,10 @@ class Artist:
             return list(self._releases.values())
         else:
             http = HTTPClient()
-            releases = await http.get_artist_releases(self.id)
-            await http.close()
-            for data in releases['results']:
+            for data in (await http.get_artist_releases(self.id))['results']:
                 release = Release(**data)
                 self._add_release(release)
+            await http.close()
             return list(self._releases.values())
 
 

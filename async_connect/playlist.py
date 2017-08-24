@@ -76,11 +76,10 @@ class Playlist:
             return list(self._tracks.values())
         else:
             http = HTTPClient()
-            tracklist = await http.get_playlist_tracklist(self.id)
-            await http.close()
-            for data in tracklist['results']:
+            for data in (await http.get_playlist_tracklist(self.id))['results']:
                 track = PlaylistEntry(**data)
                 self._add_track(track)
+            await http.close()
             return list(self._tracks.values())
 
     def _add_track(self, track):

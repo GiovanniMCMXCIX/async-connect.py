@@ -102,11 +102,10 @@ class Release:
             from .http import HTTPClient
             from .track import Track
             http = HTTPClient()
-            tracklist = await http.get_release_tracklist(self.id)
-            await http.close()
-            for data in tracklist['results']:
+            for data in (await http.get_release_tracklist(self.id))['results']:
                 track = Track(**data)
                 self._add_track(track)
+            await http.close()
             return list(self._tracks.values())
 
 

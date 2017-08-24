@@ -428,8 +428,7 @@ class Client:
             All the singles/eps/albums/podcasts (depends how you set the parameters) that are available.
         """
         releases = []
-        data = await self.http.get_all_releases(singles=singles, eps=eps, albums=albums, podcasts=podcasts, limit=limit, skip=skip)
-        for release in data['results']:
+        for release in (await self.http.get_all_releases(singles=singles, eps=eps, albums=albums, podcasts=podcasts, limit=limit, skip=skip))['results']:
             releases.append(Release(**release))
         return releases
 
@@ -451,8 +450,7 @@ class Client:
             All the tracks that are available.
         """
         tracks = []
-        data = await self.http.get_all_tracks(limit=limit, skip=skip)
-        for track in data['results']:
+        for track in (await self.http.get_all_tracks(limit=limit, skip=skip))['results']:
             tracks.append(Track(**track))
         return tracks
 
@@ -476,8 +474,7 @@ class Client:
             All the artists that are available.
         """
         artists = []
-        data = await self.http.get_all_artists(year=year, limit=limit, skip=skip)
-        for artist in data['results']:
+        for artist in (await self.http.get_all_artists(year=year, limit=limit, skip=skip))['results']:
             artists.append(Artist(**artist))
         return artists
 
@@ -504,8 +501,7 @@ class Client:
            All the playlists that the account has.
         """
         playlists = []
-        data = await self.http.get_all_playlists(limit=limit, skip=skip)
-        for playlist in data['results']:
+        for playlist in (await self.http.get_all_playlists(limit=limit, skip=skip))['results']:
             playlists.append(Playlist(**playlist))
         return playlists
 
@@ -539,8 +535,7 @@ class Client:
             List of browse entries that the API could find with the given filters.
         """
         entries = []
-        data = await self.http.get_browse_entries(types=types, genres=genres, tags=tags, limit=limit, skip=skip)
-        for entry in data['results']:
+        for entry in (await self.http.get_browse_entries(types=types, genres=genres, tags=tags, limit=limit, skip=skip))['results']:
             entries.append(BrowseEntry(**entry))
         if not entries:
             raise NotFound('No browse entry was found.')
@@ -572,8 +567,7 @@ class Client:
             List of releases that the API could find.
         """
         releases = []
-        data = await self.http.request('GET', f'{self.http.RELEASE}?fuzzyOr=title,{quote(term)},renderedArtists,{quote(term)}&limit={limit}&skip={skip}')
-        for release in data['results']:
+        for release in (await self.http.request('GET', f'{self.http.RELEASE}?fuzzyOr=title,{quote(term)},renderedArtists,{quote(term)}&limit={limit}&skip={skip}'))['results']:
             releases.append(Release(**release))
         if not releases:
             raise NotFound('No release was found.')
@@ -607,8 +601,7 @@ class Client:
             List of releases that the API could find.
         """
         releases = []
-        data = await self.http.request('GET', f'{self.http.RELEASE}?fuzzy=title,{quote(title)},renderedArtists,{quote(artists)}&limit={limit}&skip={skip}')
-        for release in data['results']:
+        for release in (await self.http.request('GET', f'{self.http.RELEASE}?fuzzy=title,{quote(title)},renderedArtists,{quote(artists)}&limit={limit}&skip={skip}'))['results']:
             releases.append(Release(**release))
         if not releases:
             raise NotFound('No release was found.')
@@ -640,8 +633,7 @@ class Client:
             List of tracks that the API could find.
         """
         tracks = []
-        data = await self.http.request('GET', f'{self.http.TRACK}?fuzzyOr=title,{quote(term)},artistsTitle,{quote(term)}&limit={limit}&skip={skip}')
-        for track in data['results']:
+        for track in (await self.http.request('GET', f'{self.http.TRACK}?fuzzyOr=title,{quote(term)},artistsTitle,{quote(term)}&limit={limit}&skip={skip}'))['results']:
             tracks.append(Track(**track))
         if not tracks:
             raise NotFound('No track was found.')
@@ -675,8 +667,7 @@ class Client:
             List of tracks that the API could find.
         """
         tracks = []
-        data = await self.http.request('GET', f'{self.http.TRACK}?fuzzy=title,{quote(title)},artistsTitle,{quote(artists)}&limit={limit}&skip={skip}')
-        for track in data['results']:
+        for track in (await self.http.request('GET', f'{self.http.TRACK}?fuzzy=title,{quote(title)},artistsTitle,{quote(artists)}&limit={limit}&skip={skip}'))['results']:
             tracks.append(Track(**track))
         if not tracks:
             raise NotFound('No track was found.')
@@ -713,8 +704,7 @@ class Client:
         base = f'{self.http.ARTIST}?limit={limit}&skip={skip}&fuzzyOr=name,{quote(term)}'
         if year:
             base = f'{base},year,{year}'
-        data = await self.http.request('GET', base)
-        for artist in data['results']:
+        for artist in (await self.http.request('GET', base))['results']:
             artists.append(Artist(**artist))
         if not artists:
             raise NotFound('No artist was found.')
@@ -748,8 +738,7 @@ class Client:
             List of playlists that the API could find.
         """
         playlists = []
-        data = await self.http.request('GET', f'{self.http.PLAYLIST}?fuzzyOr=name,{quote(term)}&limit={limit}&skip={skip}')
-        for playlist in data['results']:
+        for playlist in (await self.http.request('GET', f'{self.http.PLAYLIST}?fuzzyOr=name,{quote(term)}&limit={limit}&skip={skip}'))['results']:
             playlists.append(Playlist(**playlist))
         if not playlists:
             raise NotFound('No playlist was found.')
