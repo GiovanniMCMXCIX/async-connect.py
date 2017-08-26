@@ -91,6 +91,7 @@ class HTTPClient:
                 raise HTTPSException(data.pop('message', 'Unknown error'), response)
 
     async def download(self, url, path, chunk_size=4096, **kwargs):
+        filename = kwargs.pop('filename', None)
         kwargs['headers'] = {'User-Agent': self.user_agent}
         async with self.session.request('GET', url, **kwargs) as response:
             async def raise_error(error, resp, use_resp=False):
@@ -112,7 +113,6 @@ class HTTPClient:
                         raise error({'message': text} if text else 'Unknown error')
 
             if 300 > response.status >= 200:
-                filename = kwargs.pop('filename', None)
                 if not filename:
                     filename = str.replace(re.findall("filename=(.+)", response.headers['content-disposition'])[0], "\"", "")
                 with open(f'{path}/{filename}', 'wb') as file:

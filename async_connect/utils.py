@@ -61,6 +61,8 @@ class DownloadLinkGenerator:
 
 
 def to_json(obj):
+    if json.__name__ == 'ujson':
+        return json.dumps(obj, ensure_ascii=True)
     return json.dumps(obj, separators=(',', ':'), ensure_ascii=True)
 
 
