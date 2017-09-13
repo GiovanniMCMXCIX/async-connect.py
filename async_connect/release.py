@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from .iterators import ReleaseIterator
 from . import utils
 
 
@@ -57,8 +58,8 @@ class Release:
     """
 
     __slots__ = [
-        'id', 'catalog_id', 'artists', 'title', 'release_date', 'type', 'cover_url',
-        'urls', 'is_downloadable', 'is_streamable', 'in_early_access', 'is_free', '_tracks'
+        'id', 'catalog_id', 'artists', 'title', 'release_date', 'type', 'cover_url', 'urls', 'is_downloadable',
+        'is_streamable', 'in_early_access', 'is_free', '_tracks', '_loop', '_http', '_iterator'
     ]
 
     def __init__(self, **kwargs):
@@ -74,7 +75,9 @@ class Release:
         self.is_streamable = kwargs.pop('streamable', None)
         self.in_early_access = kwargs.pop('inEarlyAccess', None)
         self.is_free = kwargs.pop('freeDownloadForUsers', None)
-        self._tracks = {}
+        self._http = kwargs.pop('http_client', None)
+        self._loop = kwargs.pop('loop', None)
+        self._iterator = ReleaseIterator(self.id, loop=self._loop, http_client=self._http)
 
     def __eq__(self, other):
         return self.id == other.id
@@ -89,24 +92,16 @@ class Release:
         """Returns a hash to a bound resolution."""
         return f'{self.cover_url}?image_width={resolution}'
 
-    def _add_track(self, track):
-        self._tracks[track.id] = track
-
-    async def tracks(self) -> list:
+    async def tracks(self, iterate: bool = False) -> list or ReleaseIterator:
         """This function is a coroutine.
 
-        Returns a list of connect.Tracks items."""
-        if self._tracks:
-            return list(self._tracks.values())
-        else:
-            from .http import HTTPClient
-            from .track import Track
-            http = HTTPClient()
-            for data in (await http.get_release_tracklist(self.id))['results']:
-                track = Track(**data)
-                self._add_track(track)
-            await http.close()
-            return list(self._tracks.values())
+        Returns a list of connect.Tracks items or ReleaseIterator if the parameter 'iterate' is True."""
+        if iterate:
+            return self._iterator
+        if self._iterator.items.empty():
+            await self._iterator.request_data()
+            return self._iterator.values
+        return self._iterator.values
 
 
 class ReleaseEntry:

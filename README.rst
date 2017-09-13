@@ -55,7 +55,7 @@ Note for using ``uvloop`` on async-connect.py you need to parse it to ``connect.
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     loop = asyncio.get_event_loop()
-    client = connect.Client(loop)
+    client = connect.Client(loop=loop)
 
     # rest of your code here
 

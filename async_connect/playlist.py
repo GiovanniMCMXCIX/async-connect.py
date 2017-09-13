@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from .http import HTTPClient
+from .iterators import PlaylistIterator
 from .release import ReleaseEntry
 from .track import Track
 from typing import List
@@ -47,7 +47,7 @@ class Playlist:
             If the playlist is deleted.
         """
 
-    __slots__ = ['id', 'name', 'owner_id', 'is_public', 'is_deleted', '_tracks']
+    __slots__ = ['id', 'name', 'owner_id', 'is_public', 'is_deleted', '_tracks', '_loop', '_http', '_iterator']
 
     def __init__(self, **kwargs):
         self.id = kwargs.pop('_id')
@@ -55,7 +55,9 @@ class Playlist:
         self.owner_id = kwargs.pop('userId')
         self.is_public = kwargs.pop('public')
         self.is_deleted = kwargs.pop('deleted')
-        self._tracks = {}
+        self._http = kwargs.pop('http_client', None)
+        self._loop = kwargs.pop('loop', None)
+        self._iterator = PlaylistIterator(self.id, loop=self._loop, http_client=self._http)
 
     def __eq__(self, other):
         return self.id == other.id and isinstance(other, self.__class__)
@@ -68,22 +70,16 @@ class Playlist:
     def __str__(self):
         return self.name
 
-    async def tracks(self) -> List['PlaylistEntry']:
+    async def tracks(self, iterate: bool=False) -> List['PlaylistEntry'] or PlaylistIterator:
         """This function is a coroutine.
 
         Returns a list of connect.playlist.PlaylistEntry items."""
-        if self._tracks:
-            return list(self._tracks.values())
-        else:
-            http = HTTPClient()
-            for data in (await http.get_playlist_tracklist(self.id))['results']:
-                track = PlaylistEntry(**data)
-                self._add_track(track)
-            await http.close()
-            return list(self._tracks.values())
-
-    def _add_track(self, track):
-        self._tracks[track.id] = track
+        if iterate:
+            return self._iterator
+        if self._iterator.items.empty():
+            await self._iterator.request_data()
+            return self._iterator.values
+        return self._iterator.values
 
 
 class PlaylistEntry(Track):

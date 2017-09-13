@@ -119,8 +119,8 @@ class Track:
         return list(self._remixers.values())
 
     @staticmethod
-    def _add_to_dict(class_used, dict_to_add):
-        dict_to_add[class_used.id] = class_used
+    def _add_to_dict(item, _dict):
+        _dict[item.id] = item
 
     def _from_data(self):
         for data in self._albums_raw:

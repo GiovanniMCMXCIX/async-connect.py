@@ -24,9 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from .http import HTTPClient
-from .release import Release
-from typing import List
+from .iterators import ArtistIterator
 
 
 class Artist:
@@ -51,8 +49,8 @@ class Artist:
     """
 
     __slots__ = [
-        'id', 'name', 'vanity_uri', 'profile_image_id', 'profile_image_url',
-        'about', 'bookings', 'management_detail', 'urls', 'years', '_releases'
+        'id', 'name', 'vanity_uri', 'profile_image_id', 'profile_image_url', 'about', 'bookings',
+        'management_detail', 'urls', 'years', '_releases', '_loop', '__loop', '_http', '__http', '_iterator'
     ]
 
     def __init__(self, **kwargs):
@@ -66,7 +64,9 @@ class Artist:
         self.management_detail = kwargs.pop('managementDetail', None)
         self.urls = kwargs.pop('urls')
         self.years = kwargs.pop('years')
-        self._releases = {}
+        self._http = kwargs.pop('http_client', None)
+        self._loop = kwargs.pop('loop', None)
+        self._iterator = ArtistIterator(self.id, loop=self._loop, http_client=self._http)
 
     def __eq__(self, other):
         return self.id == other.id
@@ -80,19 +80,16 @@ class Artist:
     def _add_release(self, release):
         self._releases[release.id] = release
 
-    async def releases(self) -> List[Release]:
+    async def releases(self, iterate: bool=False) -> list or ArtistIterator:
         """This function is a coroutine.
 
         Returns a list of the artist's releases or appearances."""
-        if self._releases:
-            return list(self._releases.values())
-        else:
-            http = HTTPClient()
-            for data in (await http.get_artist_releases(self.id))['results']:
-                release = Release(**data)
-                self._add_release(release)
-            await http.close()
-            return list(self._releases.values())
+        if iterate:
+            return self._iterator
+        if self._iterator.items.empty():
+            await self._iterator.request_data()
+            return self._iterator.values
+        return self._iterator.values
 
 
 class ArtistEntry:
