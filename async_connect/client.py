@@ -41,7 +41,6 @@ class Client:
     def __init__(self, *, loop=None):
         self.loop = asyncio.get_event_loop() if not loop else loop
         self.http = HTTPClient(loop=self.loop)
-        self.browse_filters = self.loop.run_until_complete(self.http.request('GET', self.http.BROWSE_FILTERS))
         self._is_closed = False
 
     async def sign_in(self, email: str, password: str, token: int = None):
@@ -297,6 +296,9 @@ class Client:
             The playlist with the track that was deleted.
         """
         return Playlist(loop=self.loop, http_client=self.http, **await self.http.delete_playlist_track(playlist_id=playlist.id, track_id=track.id))
+
+    async def get_browse_filters(self) -> dict:
+        return await self.http.request('GET', self.http.BROWSE_FILTERS)
 
     async def get_discord_invite(self) -> str:
         """This function is a coroutine.

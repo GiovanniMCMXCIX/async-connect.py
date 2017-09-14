@@ -25,7 +25,6 @@ SOFTWARE.
 """
 
 from .iterators import ArtistIterator
-from typing import Union
 
 
 class Artist:
