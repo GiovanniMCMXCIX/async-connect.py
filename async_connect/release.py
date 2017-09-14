@@ -77,7 +77,6 @@ class Release:
         self.is_free = kwargs.pop('freeDownloadForUsers', None)
         self._http = kwargs.pop('http_client', None)
         self._loop = kwargs.pop('loop', None)
-        self._iterator = ReleaseIterator(self.id, loop=self._loop, http_client=self._http)
 
     def __eq__(self, other):
         return self.id == other.id
@@ -92,16 +91,12 @@ class Release:
         """Returns a hash to a bound resolution."""
         return f'{self.cover_url}?image_width={resolution}'
 
-    async def tracks(self, iterate: bool = False) -> list or ReleaseIterator:
-        """This function is a coroutine.
+    @property
+    def tracks(self):
+        """Returns an AsyncIterator.
 
-        Returns a list of connect.Tracks items or ReleaseIterator if the parameter 'iterate' is True."""
-        if iterate:
-            return self._iterator
-        if self._iterator.items.empty():
-            await self._iterator.request_data()
-            return self._iterator.values
-        return self._iterator.values
+        Use 'await release.tracks.values()' to get a list instead of an asynchronous iterator."""
+        return ReleaseIterator(self.id, loop=self._loop, http_client=self._http)
 
 
 class ReleaseEntry:

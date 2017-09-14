@@ -27,7 +27,7 @@ SOFTWARE.
 from .iterators import PlaylistIterator
 from .release import ReleaseEntry
 from .track import Track
-from typing import List
+from typing import Union, List
 
 
 class Playlist:
@@ -70,16 +70,12 @@ class Playlist:
     def __str__(self):
         return self.name
 
-    async def tracks(self, iterate: bool=False) -> List['PlaylistEntry'] or PlaylistIterator:
-        """This function is a coroutine.
+    @property
+    def tracks(self):
+        """Returns an AsyncIterator.
 
-        Returns a list of connect.playlist.PlaylistEntry items."""
-        if iterate:
-            return self._iterator
-        if self._iterator.items.empty():
-            await self._iterator.request_data()
-            return self._iterator.values
-        return self._iterator.values
+        Use 'await playlist.tracks.values()' to get a list instead of an asynchronous iterator."""
+        return PlaylistIterator(self.id, loop=self._loop, http_client=self._http)
 
 
 class PlaylistEntry(Track):

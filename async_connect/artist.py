@@ -25,6 +25,7 @@ SOFTWARE.
 """
 
 from .iterators import ArtistIterator
+from typing import Union
 
 
 class Artist:
@@ -77,19 +78,12 @@ class Artist:
     def __str__(self):
         return self.name
 
-    def _add_release(self, release):
-        self._releases[release.id] = release
+    @property
+    def releases(self):
+        """Returns an AsyncIterator.
 
-    async def releases(self, iterate: bool=False) -> list or ArtistIterator:
-        """This function is a coroutine.
-
-        Returns a list of the artist's releases or appearances."""
-        if iterate:
-            return self._iterator
-        if self._iterator.items.empty():
-            await self._iterator.request_data()
-            return self._iterator.values
-        return self._iterator.values
+        Use 'await artist.releases.values()' to get a list instead of an asynchronous iterator."""
+        return ArtistIterator(self.id, loop=self._loop, http_client=self._http)
 
 
 class ArtistEntry:

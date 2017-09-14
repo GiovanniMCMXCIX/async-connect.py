@@ -46,7 +46,7 @@ class TestSearch(unittest.TestCase):
             releases = await self.connect.search_release('friends')
             print('\n[connect.Client.search_release] Found the following:')
             for release in releases:
-                print('[{0.catalog_id}] Released on {0.release_date}, has {1} track(s) and with the title {0.title}'.format(release, len(await release.tracks())))
+                print('[{0.catalog_id}] Released on {0.release_date}, has {1} track(s) and with the title {0.title}'.format(release, len(await release.tracks.values())))
             self.assertEqual(releases[0], await self.connect.get_release('MCEP071'))
         self.loop.run_until_complete(test())
 
@@ -55,7 +55,7 @@ class TestSearch(unittest.TestCase):
             releases = await self.connect.search_release_advanced('FTW', 'Lets Be Friends')
             print('\n[connect.Client.search_release_advanced] Found the following:')
             for release in releases:
-                print('[{0.catalog_id}] Released on {0.release_date}, has {1} track(s) and with the title {0.title}'.format(release, len(await release.tracks())))
+                print('[{0.catalog_id}] Released on {0.release_date}, has {1} track(s) and with the title {0.title}'.format(release, len(await release.tracks.values())))
             self.assertEqual(releases[0], await self.connect.get_release('MCS194'))
         self.loop.run_until_complete(test())
 
@@ -82,7 +82,7 @@ class TestSearch(unittest.TestCase):
             artists = await self.connect.search_artist('grant')
             print('\n[connect.Client.search_artist] Found the following:')
             for artist in artists:
-                print("{0.name}, that has {1} release(s) and it's featured on the following year(s): {2}".format(artist, len(await artist.releases()),
+                print("{0.name}, that has {1} release(s) and it's featured on the following year(s): {2}".format(artist, len(await artist.releases.values()),
                                                                                                                  ', '.join(str(year) for year in artist.years)))
             self.assertEqual(artists[1], await self.connect.get_artist('grant'))
         self.loop.run_until_complete(test())

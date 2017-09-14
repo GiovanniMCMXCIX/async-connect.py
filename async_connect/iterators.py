@@ -24,26 +24,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from typing import AsyncIterator
 from .http import HTTPClient
 import asyncio
 
 
-class AsyncIterator:
+class _AsyncIterator(AsyncIterator):
     def __init__(self, *, http_client=None, loop=None):
         self.loop = loop
         self.items = asyncio.Queue(loop=self.loop)
         self._http = http_client
         self._request = True
 
-    async def __aiter__(self):
-        return self
+    async def __anext__(self):
+        if self.items.empty() and self._request:
+            await self.request_data()
+            self._request = False
+        try:
+            value = self.items.get_nowait()
+        except asyncio.QueueEmpty:
+            raise StopAsyncIteration()
+        else:
+            return value
 
-    @property
-    def values(self):
-        return self.items._queue
+    async def values(self) -> list:
+        await self.request_data()
+        return list(self.items._queue)
+
+    async def request_data(self):
+        pass
 
 
-class ReleaseIterator(AsyncIterator):
+class ReleaseIterator(_AsyncIterator):
     def __init__(self, release_id: str, *, http_client=None, loop=None):
         super().__init__(http_client=http_client, loop=loop)
         self.id = release_id
@@ -57,19 +69,8 @@ class ReleaseIterator(AsyncIterator):
         if not self._http:
             await http.close()
 
-    async def __anext__(self):
-        if self.items.empty() and self._request:
-            await self.request_data()
-            self._request = False
-        try:
-            value = self.items.get_nowait()
-        except asyncio.QueueEmpty:
-            raise StopAsyncIteration()
-        else:
-            return value
 
-
-class PlaylistIterator(AsyncIterator):
+class PlaylistIterator(_AsyncIterator):
     def __init__(self, playlist_id: str, *, http_client=None, loop=None):
         super().__init__(http_client=http_client, loop=loop)
         self.id = playlist_id
@@ -83,19 +84,8 @@ class PlaylistIterator(AsyncIterator):
         if not self._http:
             await http.close()
 
-    async def __anext__(self):
-        if self.items.empty() and self._request:
-            await self.request_data()
-            self._request = False
-        try:
-            value = self.items.get_nowait()
-        except asyncio.QueueEmpty:
-            raise StopAsyncIteration()
-        else:
-            return value
 
-
-class ArtistIterator(AsyncIterator):
+class ArtistIterator(_AsyncIterator):
     def __init__(self, artist_id: str, *, http_client=None, loop=None):
         super().__init__(http_client=http_client, loop=loop)
         self.id = artist_id
@@ -108,14 +98,3 @@ class ArtistIterator(AsyncIterator):
             self.items.put_nowait(release)
         if not self._http:
             await http.close()
-
-    async def __anext__(self):
-        if self.items.empty() and self._request:
-            await self.request_data()
-            self._request = False
-        try:
-            value = self.items.get_nowait()
-        except asyncio.QueueEmpty:
-            raise StopAsyncIteration()
-        else:
-            return value

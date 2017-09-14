@@ -47,7 +47,7 @@ class TestGetAllCatalog(unittest.TestCase):
             releases = []
             data = await self.connect.get_all_releases()
             for release in data:
-                releases.append((str(release), len(await release.tracks())))
+                releases.append((str(release), len(await release.tracks.values())))
             print(f'There are {len(releases)} total releases.')
         self.loop.run_until_complete(test())
 
@@ -67,7 +67,7 @@ class TestGetAllCatalog(unittest.TestCase):
             artists = []
             data = await self.connect.get_all_artists()
             for artist in data:
-                artists.append((str(artist), len(await artist.releases())))
+                artists.append((str(artist), len(await artist.releases.values())))
             print(f'There are {len(artists)} total artists.')
         self.loop.run_until_complete(test())
 

@@ -45,16 +45,14 @@ class TestGetAllCatalog(unittest.TestCase):
         async def test():
             release = await self.connect.get_release('MC011')
             print('\n[connect.Client.get_release]\n{0.title} by {0.artists} had been release on {0.release_date} and has the following track(s):'.format(release))
-            tracks = await release.tracks()
-            print('\n'.join(['{0.title} by {0.artists}'.format(track) for track in tracks]))
+            print('\n'.join(['{0.title} by {0.artists}'.format(track) async for track in release.tracks]))
         self.loop.run_until_complete(test())
 
     def test_playlist(self):
         async def test():
             playlist = await self.connect.get_playlist('577ec5395891d31a15b80c39')
             print('\n[connect.Client.get_playlist]\nThe playlist with the name {0} has the following tracks:'.format(playlist.name))
-            tracks = await playlist.tracks()
-            for track in tracks:
+            async for track in playlist.tracks:
                 print('[{0.release.catalog_id}] {0.title} by {0.artists} from {0.release.title}'.format(track))
         self.loop.run_until_complete(test())
 
@@ -74,13 +72,11 @@ class TestGetAllCatalog(unittest.TestCase):
             artist = await self.connect.get_artist('gq')
             print('\n[connect.connect.get_artist]\n{}, is featured on the year(s) {} and has released the following:'.format(
                 artist, ', '.join(str(year) for year in artist.years)))
-            releases = await artist.releases()
-            for release in releases:
+            async for release in artist.releases:
                 if not release.artists.lower() == 'various artists':
-                    print('[{0.catalog_id}] {0.title} with {1} track(s)'.format(release, len(await release.tracks())))
+                    print('[{0.catalog_id}] {0.title} with {1} track(s)'.format(release, len(await release.tracks.values())))
             print("And appears on:")
-            releases = await artist.releases()
-            for release in releases:
+            async for release in artist.releases:
                 if release.artists.lower() == 'various artists':
                     print('[{0.catalog_id}] {0.title}'.format(release))
         self.loop.run_until_complete(test())
