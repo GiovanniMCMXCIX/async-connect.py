@@ -24,9 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import async_connect as connect
-import unittest
 import sys
+import unittest
+
+import async_connect as connect
 
 
 class TestGetAllCatalog(unittest.TestCase):
@@ -49,6 +50,7 @@ class TestGetAllCatalog(unittest.TestCase):
             for release in data:
                 releases.append((str(release), len(await release.tracks.values())))
             print(f'There are {len(releases)} total releases.')
+
         self.loop.run_until_complete(test())
 
     def test_track(self):
@@ -59,6 +61,7 @@ class TestGetAllCatalog(unittest.TestCase):
             for track in data:
                 tracks.append((str(track), len(track.albums)))
             print(f'There are {len(tracks)} total tracks.')
+
         self.loop.run_until_complete(test())
 
     def test_artist(self):
@@ -69,6 +72,7 @@ class TestGetAllCatalog(unittest.TestCase):
             for artist in data:
                 artists.append((str(artist), len(await artist.releases.values())))
             print(f'There are {len(artists)} total artists.')
+
         self.loop.run_until_complete(test())
 
     def tearDown(self):

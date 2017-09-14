@@ -24,9 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from .release import Release, Album
-from .artist import ArtistEntry
 from typing import List
+
+from .artist import ArtistEntry
+from .release import Release, Album
 
 
 class Track:

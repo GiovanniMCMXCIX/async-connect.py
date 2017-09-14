@@ -24,9 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import async_connect as connect
-import unittest
 import sys
+import unittest
+
+import async_connect as connect
 
 
 class TestGetAllCatalog(unittest.TestCase):
@@ -46,6 +47,7 @@ class TestGetAllCatalog(unittest.TestCase):
             release = await self.connect.get_release('MC011')
             print('\n[connect.Client.get_release]\n{0.title} by {0.artists} had been release on {0.release_date} and has the following track(s):'.format(release))
             print('\n'.join(['{0.title} by {0.artists}'.format(track) async for track in release.tracks]))
+
         self.loop.run_until_complete(test())
 
     def test_playlist(self):
@@ -54,6 +56,7 @@ class TestGetAllCatalog(unittest.TestCase):
             print('\n[connect.Client.get_playlist]\nThe playlist with the name {0} has the following tracks:'.format(playlist.name))
             async for track in playlist.tracks:
                 print('[{0.release.catalog_id}] {0.title} by {0.artists} from {0.release.title}'.format(track))
+
         self.loop.run_until_complete(test())
 
     def test_track(self):
@@ -65,6 +68,7 @@ class TestGetAllCatalog(unittest.TestCase):
             self.assertEqual([album.id for album in track.albums if album.id == release.id][0], release.id)
             for album in track.albums:
                 print('[{0.catalog_id}] {0.title}'.format(await self.connect.get_release(album.id)))
+
         self.loop.run_until_complete(test())
 
     def test_artist(self):
@@ -79,6 +83,7 @@ class TestGetAllCatalog(unittest.TestCase):
             async for release in artist.releases:
                 if release.artists.lower() == 'various artists':
                     print('[{0.catalog_id}] {0.title}'.format(release))
+
         self.loop.run_until_complete(test())
 
     def tearDown(self):

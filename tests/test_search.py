@@ -24,9 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import async_connect as connect
-import unittest
 import sys
+import unittest
+
+import async_connect as connect
 
 
 class TestSearch(unittest.TestCase):
@@ -48,6 +49,7 @@ class TestSearch(unittest.TestCase):
             for release in releases:
                 print('[{0.catalog_id}] Released on {0.release_date}, has {1} track(s) and with the title {0.title}'.format(release, len(await release.tracks.values())))
             self.assertEqual(releases[0], await self.connect.get_release('MCEP071'))
+
         self.loop.run_until_complete(test())
 
     def test_release_adv(self):
@@ -57,6 +59,7 @@ class TestSearch(unittest.TestCase):
             for release in releases:
                 print('[{0.catalog_id}] Released on {0.release_date}, has {1} track(s) and with the title {0.title}'.format(release, len(await release.tracks.values())))
             self.assertEqual(releases[0], await self.connect.get_release('MCS194'))
+
         self.loop.run_until_complete(test())
 
     def test_track(self):
@@ -66,6 +69,7 @@ class TestSearch(unittest.TestCase):
             for track in tracks:
                 print('{0.title} by {0.artists} with the genre(s) {1} and featured on {2} release(s)'.format(track, ', '.join(track.genres), len(track.albums)))
             self.assertEqual(tracks[0], await self.connect.get_track('5175cd4e0695c7ac5d000033'))
+
         self.loop.run_until_complete(test())
 
     def test_track_adv(self):
@@ -75,6 +79,7 @@ class TestSearch(unittest.TestCase):
             for track in tracks:
                 print('{0.title} by {0.artists} with the genre(s) {1} and featured on {2} release(s)'.format(track, ', '.join(track.genres), len(track.albums)))
             self.assertEqual(tracks[0], await self.connect.get_track('56a2773c5050dd875854cf85'))
+
         self.loop.run_until_complete(test())
 
     def test_artist(self):
@@ -85,6 +90,7 @@ class TestSearch(unittest.TestCase):
                 print("{0.name}, that has {1} release(s) and it's featured on the following year(s): {2}".format(artist, len(await artist.releases.values()),
                                                                                                                  ', '.join(str(year) for year in artist.years)))
             self.assertEqual(artists[1], await self.connect.get_artist('grant'))
+
         self.loop.run_until_complete(test())
 
     def tearDown(self):

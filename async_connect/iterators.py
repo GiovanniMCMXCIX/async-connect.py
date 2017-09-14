@@ -24,9 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import AsyncIterator
-from .http import HTTPClient
 import asyncio
+from typing import AsyncIterator
+
+from .http import HTTPClient
 
 
 class _AsyncIterator(AsyncIterator):

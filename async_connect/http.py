@@ -24,10 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import aiohttp
 import asyncio
-import sys
 import re
+import sys
+
+import aiohttp
 
 try:
     import ujson as json

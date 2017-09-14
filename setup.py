@@ -1,6 +1,7 @@
-from setuptools import setup, find_packages
-import sys
 import re
+import sys
+
+from setuptools import setup, find_packages
 
 with open('requirements.txt') as f:
     requirements = f.readlines()

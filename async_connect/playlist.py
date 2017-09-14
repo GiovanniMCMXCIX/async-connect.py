@@ -27,7 +27,6 @@ SOFTWARE.
 from .iterators import PlaylistIterator
 from .release import ReleaseEntry
 from .track import Track
-from typing import Union, List
 
 
 class Playlist:

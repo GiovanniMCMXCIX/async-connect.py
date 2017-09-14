@@ -15,14 +15,15 @@ __license__ = 'MIT'
 __copyright__ = 'Copyright 2017 GiovanniMCMXCIX'
 __version__ = '0.2.0a0'
 
-from .errors import *
+from collections import namedtuple
+
+from . import utils
+from .artist import Artist
 from .client import Client
+from .errors import *
+from .playlist import Playlist
 from .release import Release
 from .track import Track, BrowseEntry
-from .artist import Artist
-from .playlist import Playlist
-from . import utils
-from collections import namedtuple
 
 VersionInfo = namedtuple('VersionInfo', 'major minor micro releaselevel serial')
 

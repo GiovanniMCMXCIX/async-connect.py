@@ -32,6 +32,7 @@ class AsyncConnectException(Exception):
 
 class HTTPSException(AsyncConnectException):
     """Exception that's thrown when an HTTP request operation fails."""
+
     def __init__(self, message, response=None):
         self.response = response
         self.message = message

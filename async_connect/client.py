@@ -25,16 +25,16 @@ SOFTWARE.
 """
 
 import asyncio
-
-from .http import HTTPClient
-from .errors import NotFound
-from .release import Release
-from .track import Track, BrowseEntry
-from .artist import Artist
-from .playlist import Playlist
-from .utils import find
 from typing import List, Tuple
 from urllib.parse import quote
+
+from .artist import Artist
+from .errors import NotFound
+from .http import HTTPClient
+from .playlist import Playlist
+from .release import Release
+from .track import Track, BrowseEntry
+from .utils import find
 
 
 class Client:

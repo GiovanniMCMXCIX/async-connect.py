@@ -24,8 +24,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import re
 import datetime
+import re
 
 try:
     import ujson as json
@@ -34,7 +34,6 @@ except ImportError:
 
 
 class DownloadLinkGenerator:
-
     BASE = 'https://connect.monstercat.com'
     API_BASE = BASE + '/api'
     RELEASE = API_BASE + '/release'
