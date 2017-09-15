@@ -48,10 +48,10 @@ class Artist:
         The artist release years.
     """
 
-    __slots__ = [
+    __slots__ = (
         'id', 'name', 'vanity_uri', 'profile_image_id', 'profile_image_url', 'about', 'bookings',
-        'management_detail', 'urls', 'years', '_releases', '_loop', '__loop', '_http', '__http', '_iterator'
-    ]
+        'management_detail', 'urls', 'years', '_releases', '_loop', '__loop', '_http', '__http'
+    )
 
     def __init__(self, **kwargs):
         self.id = kwargs.pop('_id')
@@ -66,7 +66,6 @@ class Artist:
         self.years = kwargs.pop('years')
         self._http = kwargs.pop('http_client', None)
         self._loop = kwargs.pop('loop', None)
-        self._iterator = ArtistIterator(self.id, loop=self._loop, http_client=self._http)
 
     def __eq__(self, other):
         return self.id == other.id
@@ -96,7 +95,7 @@ class ArtistEntry:
         The artist name.
     """
 
-    __slots__ = ['id', 'name']
+    __slots__ = ('id', 'name')
 
     def __init__(self, **kwargs):
         self.id = kwargs.pop('artistId')

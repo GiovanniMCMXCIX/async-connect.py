@@ -57,10 +57,10 @@ class Release:
         Indicates if the track can be downloaded for free.
     """
 
-    __slots__ = [
-        'id', 'catalog_id', 'artists', 'title', 'release_date', 'type', 'cover_url', 'urls', 'is_downloadable',
-        'is_streamable', 'in_early_access', 'is_free', '_tracks', '_loop', '_http', '_iterator'
-    ]
+    __slots__ = (
+        'id', 'catalog_id', 'artists', 'title', 'release_date', 'type', 'cover_url', 'urls',
+        'is_downloadable', 'is_streamable', 'in_early_access', 'is_free', '_tracks', '_loop', '_http'
+    )
 
     def __init__(self, **kwargs):
         self.id = kwargs.pop('_id')
@@ -120,7 +120,7 @@ class ReleaseEntry:
         Indicates if the release is in early access for gold users.
     """
 
-    __slots__ = ['id', 'catalog_id', 'title', 'release_date', 'is_downloadable', 'is_streamable', 'in_early_access']
+    __slots__ = ('id', 'catalog_id', 'title', 'release_date', 'is_downloadable', 'is_streamable', 'in_early_access')
 
     def __init__(self, **kwargs):
         self.id = kwargs.pop('_id')
@@ -156,7 +156,7 @@ class Album:
         The stream hash of the release.
     """
 
-    __slots__ = ['id', 'track_number', 'stream_id']
+    __slots__ = ('id', 'track_number', 'stream_id')
 
     def __init__(self, **kwargs):
         self.id = kwargs.pop('albumId')

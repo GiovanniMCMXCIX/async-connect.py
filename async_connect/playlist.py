@@ -46,7 +46,7 @@ class Playlist:
             If the playlist is deleted.
         """
 
-    __slots__ = ['id', 'name', 'owner_id', 'is_public', 'is_deleted', '_tracks', '_loop', '_http', '_iterator']
+    __slots__ = ('id', 'name', 'owner_id', 'is_public', 'is_deleted', '_tracks', '_loop', '_http')
 
     def __init__(self, **kwargs):
         self.id = kwargs.pop('_id')
@@ -56,7 +56,6 @@ class Playlist:
         self.is_deleted = kwargs.pop('deleted')
         self._http = kwargs.pop('http_client', None)
         self._loop = kwargs.pop('loop', None)
-        self._iterator = PlaylistIterator(self.id, loop=self._loop, http_client=self._http)
 
     def __eq__(self, other):
         return self.id == other.id and isinstance(other, self.__class__)
@@ -110,7 +109,7 @@ class PlaylistEntry(Track):
         Indicates if the track can be downloaded for free.
     """
 
-    __slots__ = ['release']
+    __slots__ = 'release'
 
     def __init__(self, **kwargs):
         self.release = ReleaseEntry(**kwargs.pop('release'))

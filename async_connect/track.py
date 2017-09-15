@@ -61,10 +61,10 @@ class Track:
         Indicates if the track can be downloaded for free.
     """
 
-    __slots__ = [
+    __slots__ = (
         'id', 'artists', 'title', 'duration', 'bpm', 'genre', 'genres', 'tags', 'is_downloadable', 'is_streamable', 'in_early_access',
         'is_free', '_albums_raw', '_artists_raw', '_featuring_raw', '_remixers_raw', '_albums', '_artists', '_featuring', '_remixers'
-    ]
+    )
 
     def __init__(self, **kwargs):
         self.id = kwargs.pop('_id')
@@ -176,7 +176,7 @@ class BrowseEntry(Track):
         Indicates if the track can be downloaded for free.
     """
 
-    __slots__ = ['release', '_albums', '_albums_raw']
+    __slots__ = ('release', '_albums', '_albums_raw')
 
     def __init__(self, **kwargs):
         self.release = Release(**kwargs.pop('release'))

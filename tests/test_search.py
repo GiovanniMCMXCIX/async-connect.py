@@ -67,7 +67,7 @@ class TestSearch(unittest.TestCase):
             tracks = await self.connect.search_track('you')
             print('\n[connect.Client.search_track] Found the following:')
             for track in tracks:
-                print('{0.title} by {0.artists} with the genre(s) {1} and featured on {2} release(s)'.format(track, ', '.join(track.genres), len(track.albums)))
+                print(f'{track.title} by {track.artists} with the genre(s) {", ".join(track.genres)} and featured on {len(track.albums)}')
             self.assertEqual(tracks[0], await self.connect.get_track('5175cd4e0695c7ac5d000033'))
 
         self.loop.run_until_complete(test())
@@ -77,7 +77,7 @@ class TestSearch(unittest.TestCase):
             tracks = await self.connect.search_track_advanced("Do You Don't You", 'Haywyre')
             print('\n[connect.Client.search_track_advanced] Found the following:')
             for track in tracks:
-                print('{0.title} by {0.artists} with the genre(s) {1} and featured on {2} release(s)'.format(track, ', '.join(track.genres), len(track.albums)))
+                print(f'{track.title} by {track.artists} with the genre(s) {", ".join(track.genres)} and featured on {len(track.albums)}')
             self.assertEqual(tracks[0], await self.connect.get_track('56a2773c5050dd875854cf85'))
 
         self.loop.run_until_complete(test())

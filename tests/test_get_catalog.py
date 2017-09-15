@@ -53,7 +53,7 @@ class TestGetAllCatalog(unittest.TestCase):
     def test_playlist(self):
         async def test():
             playlist = await self.connect.get_playlist('577ec5395891d31a15b80c39')
-            print('\n[connect.Client.get_playlist]\nThe playlist with the name {0} has the following tracks:'.format(playlist.name))
+            print(f'\n[connect.Client.get_playlist]\nThe playlist with the name {playlist} has the following tracks:')
             async for track in playlist.tracks:
                 print('[{0.release.catalog_id}] {0.title} by {0.artists} from {0.release.title}'.format(track))
 
@@ -74,15 +74,14 @@ class TestGetAllCatalog(unittest.TestCase):
     def test_artist(self):
         async def test():
             artist = await self.connect.get_artist('gq')
-            print('\n[connect.connect.get_artist]\n{}, is featured on the year(s) {} and has released the following:'.format(
-                artist, ', '.join(str(year) for year in artist.years)))
-            async for release in artist.releases:
+            print(f'\n[connect.connect.get_artist]\n{artist}, is featured on the year(s) {", ".join(str(year) for year in artist.years)} and has released the following:')
+            for release in await artist.releases.values():
                 if not release.artists.lower() == 'various artists':
                     print('[{0.catalog_id}] {0.title} with {1} track(s)'.format(release, len(await release.tracks.values())))
             print("And appears on:")
             async for release in artist.releases:
                 if release.artists.lower() == 'various artists':
-                    print('[{0.catalog_id}] {0.title}'.format(release))
+                    print(f'[{release.catalog_id}] {release.title}')
 
         self.loop.run_until_complete(test())
 
