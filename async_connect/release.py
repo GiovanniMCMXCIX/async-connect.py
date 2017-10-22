@@ -75,7 +75,7 @@ class Release:
         self.is_streamable = kwargs.pop('streamable', None)
         self.in_early_access = kwargs.pop('inEarlyAccess', None)
         self.is_free = kwargs.pop('freeDownloadForUsers', None)
-        self._http = kwargs.pop('http_client', None)
+        self._http = kwargs.pop('http', None)
         self._loop = kwargs.pop('loop', None)
 
     def __eq__(self, other):
@@ -96,7 +96,7 @@ class Release:
         """Returns an AsyncIterator.
 
         Use 'await release.tracks.values()' to get a list instead of an asynchronous iterator."""
-        return ReleaseIterator(self.id, loop=self._loop, http_client=self._http)
+        return ReleaseIterator(self.id, loop=self._loop, http=self._http)
 
 
 class ReleaseEntry:

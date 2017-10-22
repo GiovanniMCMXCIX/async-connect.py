@@ -124,9 +124,9 @@ class Client:
                 else:
                     raise ValueError(f'The track "{entry[0]}" is not in the release\'s "{entry[1]}" track list.')
 
-            return Playlist(loop=self.loop, http_client=self.http, **await self.http.create_playlist(name=name, public=public, entries=json_entries))
+            return Playlist(loop=self.loop, http=self.http, **await self.http.create_playlist(name=name, public=public, entries=json_entries))
         else:
-            return Playlist(loop=self.loop, http_client=self.http, **await self.http.create_playlist(name=name, public=public))
+            return Playlist(loop=self.loop, http=self.http, **await self.http.create_playlist(name=name, public=public))
 
     async def edit_playlist(self, playlist: Playlist, *, name: str = None, public: bool = False) -> Playlist:
         """This function is a coroutine.
@@ -152,7 +152,7 @@ class Client:
         Playlist
             The playlist that was edited.
         """
-        return Playlist(loop=self.loop, http_client=self.http, **await self.http.edit_playlist(playlist_id=playlist.id, name=name, public=public))
+        return Playlist(loop=self.loop, http=self.http, **await self.http.edit_playlist(playlist_id=playlist.id, name=name, public=public))
 
     async def edit_profile(self, *, name: str = None, real_name: str = None, location: str = None, password: str = None):
         """This function is a coroutine.
@@ -203,7 +203,7 @@ class Client:
             The playlist with the track that was added.
         """
         if find(lambda a: a.id == release.id, track.albums):
-            return Playlist(loop=self.loop, http_client=self.http, **await self.http.add_playlist_track(playlist_id=playlist.id, track_id=track.id, release_id=release.id))
+            return Playlist(loop=self.loop, http=self.http, **await self.http.add_playlist_track(playlist_id=playlist.id, track_id=track.id, release_id=release.id))
         else:
             raise ValueError(f'The track "{track}" is not in the release\'s "{release}" track list.')
 
@@ -237,7 +237,7 @@ class Client:
                 json_entries.append({'trackId': entry[0].id, 'releaseId': entry[1].id})
             else:
                 raise ValueError(f'The track "{entry[0]}" is not in the release\'s "{entry[1]}" track list.')
-        return Playlist(loop=self.loop, http_client=self.http, **await self.http.add_playlist_tracks(playlist_id=playlist.id, entries=json_entries))
+        return Playlist(loop=self.loop, http=self.http, **await self.http.add_playlist_tracks(playlist_id=playlist.id, entries=json_entries))
 
     async def add_reddit_username(self, username: str):
         """This function is a coroutine.
@@ -295,7 +295,7 @@ class Client:
         Playlist
             The playlist with the track that was deleted.
         """
-        return Playlist(loop=self.loop, http_client=self.http, **await self.http.delete_playlist_track(playlist_id=playlist.id, track_id=track.id))
+        return Playlist(loop=self.loop, http=self.http, **await self.http.delete_playlist_track(playlist_id=playlist.id, track_id=track.id))
 
     async def get_browse_filters(self) -> dict:
         return await self.http.request('GET', self.http.BROWSE_FILTERS)
@@ -333,7 +333,7 @@ class Client:
         Release
             Release that was requested with the given ID/catalog ID.
         """
-        return Release(loop=self.loop, http_client=self.http, **await self.http.get_release(catalog_id))
+        return Release(loop=self.loop, http=self.http, **await self.http.get_release(catalog_id))
 
     async def get_track(self, track_id: str) -> Track:
         """This function is a coroutine.
@@ -378,7 +378,7 @@ class Client:
         Artist
             Artist that was requested with the given ID/vanity uri.
         """
-        return Artist(loop=self.loop, http_client=self.http, **await self.http.get_artist(artist_id))
+        return Artist(loop=self.loop, http=self.http, **await self.http.get_artist(artist_id))
 
     async def get_playlist(self, playlist_id: str) -> Playlist:
         """This function is a coroutine.
@@ -402,7 +402,7 @@ class Client:
         Playlist
             Playlist that was requested with the given ID.
         """
-        return Playlist(loop=self.loop, http_client=self.http, **await self.http.get_playlist(playlist_id))
+        return Playlist(loop=self.loop, http=self.http, **await self.http.get_playlist(playlist_id))
 
     async def get_all_releases(self, *, singles: bool = True, eps: bool = True, albums: bool = True, podcasts: bool = False, limit: int = None, skip: int = None) -> List[Release]:
         """This function is a coroutine.
@@ -431,7 +431,7 @@ class Client:
         """
         releases = []
         for release in (await self.http.get_all_releases(singles=singles, eps=eps, albums=albums, podcasts=podcasts, limit=limit, skip=skip))['results']:
-            releases.append(Release(loop=self.loop, http_client=self.http, **release))
+            releases.append(Release(loop=self.loop, http=self.http, **release))
         return releases
 
     async def get_all_tracks(self, *, limit: int = None, skip: int = None) -> List[Track]:
@@ -477,7 +477,7 @@ class Client:
         """
         artists = []
         for artist in (await self.http.get_all_artists(year=year, limit=limit, skip=skip))['results']:
-            artists.append(Artist(loop=self.loop, http_client=self.http, **artist))
+            artists.append(Artist(loop=self.loop, http=self.http, **artist))
         return artists
 
     async def get_all_playlists(self, *, limit: int = None, skip: int = None) -> List[Playlist]:
@@ -504,7 +504,7 @@ class Client:
         """
         playlists = []
         for playlist in (await self.http.get_all_playlists(limit=limit, skip=skip))['results']:
-            playlists.append(Playlist(loop=self.loop, http_client=self.http, **playlist))
+            playlists.append(Playlist(loop=self.loop, http=self.http, **playlist))
         return playlists
 
     async def get_browse_entries(self, *, types: List[str] = None, genres: List[str] = None, tags: List[str] = None, limit: int = None, skip: int = None) -> List[BrowseEntry]:
@@ -570,7 +570,7 @@ class Client:
         """
         releases = []
         for release in (await self.http.request('GET', f'{self.http.RELEASE}?fuzzyOr=title,{quote(term)},renderedArtists,{quote(term)}&limit={limit}&skip={skip}'))['results']:
-            releases.append(Release(loop=self.loop, http_client=self.http, **release))
+            releases.append(Release(loop=self.loop, http=self.http, **release))
         if not releases:
             raise NotFound('No release was found.')
         else:
@@ -604,7 +604,7 @@ class Client:
         """
         releases = []
         for release in (await self.http.request('GET', f'{self.http.RELEASE}?fuzzy=title,{quote(title)},renderedArtists,{quote(artists)}&limit={limit}&skip={skip}'))['results']:
-            releases.append(Release(loop=self.loop, http_client=self.http, **release))
+            releases.append(Release(loop=self.loop, http=self.http, **release))
         if not releases:
             raise NotFound('No release was found.')
         else:
@@ -707,7 +707,7 @@ class Client:
         if year:
             base = f'{base},year,{year}'
         for artist in (await self.http.request('GET', base))['results']:
-            artists.append(Artist(loop=self.loop, http_client=self.http, **artist))
+            artists.append(Artist(loop=self.loop, http=self.http, **artist))
         if not artists:
             raise NotFound('No artist was found.')
         else:
@@ -741,7 +741,7 @@ class Client:
         """
         playlists = []
         for playlist in (await self.http.request('GET', f'{self.http.PLAYLIST}?fuzzyOr=name,{quote(term)}&limit={limit}&skip={skip}'))['results']:
-            playlists.append(Playlist(loop=self.loop, http_client=self.http, **playlist))
+            playlists.append(Playlist(loop=self.loop, http=self.http, **playlist))
         if not playlists:
             raise NotFound('No playlist was found.')
         else:

@@ -9,6 +9,6 @@ python:
   - 'nightly'
 
 install:
-  - python -c "import pip, sys; pip.main(['install', 'aiohttp', 'ujson', 'uvloop']) if sys.version_info[1] == 6 else pip.main(['install', 'aiohttp', 'ujson'])"
+  - python -c "import pip, sys; pip.main(['install', 'aiohttp', 'ujson', 'uvloop'])"
 
 script: python setup.py test

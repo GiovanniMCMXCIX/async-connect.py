@@ -81,7 +81,7 @@ class Artist:
         """Returns an AsyncIterator.
 
         Use 'await artist.releases.values()' to get a list instead of an asynchronous iterator."""
-        return ArtistIterator(self.id, loop=self._loop, http_client=self._http)
+        return ArtistIterator(self.id, loop=self._loop, http=self._http)
 
 
 class ArtistEntry:

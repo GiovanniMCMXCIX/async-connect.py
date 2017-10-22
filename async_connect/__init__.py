@@ -13,7 +13,7 @@ __title__ = 'async_connect'
 __author__ = 'GiovanniMCMXCIX'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2017 GiovanniMCMXCIX'
-__version__ = '0.2.0b0'
+__version__ = '0.2.0'
 
 from collections import namedtuple
 
@@ -27,4 +27,4 @@ from .track import Track, BrowseEntry
 
 VersionInfo = namedtuple('VersionInfo', 'major minor micro releaselevel serial')
 
-version_info = VersionInfo(major=0, minor=2, micro=0, releaselevel='beta', serial=0)
+version_info = VersionInfo(major=0, minor=2, micro=0, releaselevel='final', serial=0)

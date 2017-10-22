@@ -13,7 +13,7 @@ with open('README.rst') as f:
     readme = f.read()
 
 if sys.version_info[1] == 6:
-    test_require = ['uvloop>=0.8.0', 'ujson>=1.35']
+    test_require = ['uvloop>=0.8.1', 'ujson>=1.35']
 else:
     test_require = ['ujson>=1.35']
 

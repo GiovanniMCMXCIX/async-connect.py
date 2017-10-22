@@ -71,7 +71,7 @@ Example
         print('Found the following:')
         for release in releases:
             print('{0.title} by {0.artists} [{0.catalog_id}] was released on {0.release_date} '
-                  'and has {1} track(s)'.format(release, len(await release.tracks())))
+                  'and has {1} track(s)'.format(release, len(await release.tracks.values())))
 
     if __name__ == "__main__":
         client = connect.Client()

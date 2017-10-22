@@ -31,10 +31,10 @@ from .http import HTTPClient
 
 
 class _AsyncIterator(AsyncIterator):
-    def __init__(self, *, http_client=None, loop=None):
+    def __init__(self, *, http=None, loop=None):
         self.loop = loop
         self.items = asyncio.Queue(loop=self.loop)
-        self._http = http_client
+        self._http = http
         self._request = True
 
     async def __anext__(self):
@@ -57,8 +57,8 @@ class _AsyncIterator(AsyncIterator):
 
 
 class ReleaseIterator(_AsyncIterator):
-    def __init__(self, release_id: str, *, http_client=None, loop=None):
-        super().__init__(http_client=http_client, loop=loop)
+    def __init__(self, release_id: str, *, http=None, loop=None):
+        super().__init__(http=http, loop=loop)
         self.id = release_id
 
     async def request_data(self):
@@ -72,8 +72,8 @@ class ReleaseIterator(_AsyncIterator):
 
 
 class PlaylistIterator(_AsyncIterator):
-    def __init__(self, playlist_id: str, *, http_client=None, loop=None):
-        super().__init__(http_client=http_client, loop=loop)
+    def __init__(self, playlist_id: str, *, http=None, loop=None):
+        super().__init__(http=http, loop=loop)
         self.id = playlist_id
 
     async def request_data(self):
@@ -87,15 +87,15 @@ class PlaylistIterator(_AsyncIterator):
 
 
 class ArtistIterator(_AsyncIterator):
-    def __init__(self, artist_id: str, *, http_client=None, loop=None):
-        super().__init__(http_client=http_client, loop=loop)
+    def __init__(self, artist_id: str, *, http=None, loop=None):
+        super().__init__(http=http, loop=loop)
         self.id = artist_id
 
     async def request_data(self):
         from .release import Release
         http = HTTPClient(loop=self.loop) if not self._http else self._http
         for data in (await http.get_artist_releases(self.id))['results']:
-            release = Release(loop=self.loop, http_client=self._http, **data)
+            release = Release(loop=self.loop, http=self._http, **data)
             self.items.put_nowait(release)
         if not self._http:
             await http.close()

@@ -54,7 +54,7 @@ class Playlist:
         self.owner_id = kwargs.pop('userId')
         self.is_public = kwargs.pop('public')
         self.is_deleted = kwargs.pop('deleted')
-        self._http = kwargs.pop('http_client', None)
+        self._http = kwargs.pop('http', None)
         self._loop = kwargs.pop('loop', None)
 
     def __eq__(self, other):
@@ -73,7 +73,7 @@ class Playlist:
         """Returns an AsyncIterator.
 
         Use 'await playlist.tracks.values()' to get a list instead of an asynchronous iterator."""
-        return PlaylistIterator(self.id, loop=self._loop, http_client=self._http)
+        return PlaylistIterator(self.id, loop=self._loop, http=self._http)
 
 
 class PlaylistEntry(Track):
