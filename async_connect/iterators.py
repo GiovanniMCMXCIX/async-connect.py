@@ -63,7 +63,7 @@ class ReleaseIterator(_AsyncIterator):
 
     async def request_data(self):
         from .track import Track
-        http = HTTPClient(loop=self.loop) if not self._http else self._http
+        http = self._http or HTTPClient(loop=self.loop)
         for data in (await http.get_release_tracklist(self.id))['results']:
             track = Track(**data)
             self.items.put_nowait(track)
@@ -78,7 +78,7 @@ class PlaylistIterator(_AsyncIterator):
 
     async def request_data(self):
         from .playlist import PlaylistEntry
-        http = HTTPClient(loop=self.loop) if not self._http else self._http
+        http = self._http or HTTPClient(loop=self.loop)
         for data in (await http.get_playlist_tracklist(self.id))['results']:
             track = PlaylistEntry(**data)
             self.items.put_nowait(track)
@@ -93,7 +93,7 @@ class ArtistIterator(_AsyncIterator):
 
     async def request_data(self):
         from .release import Release
-        http = HTTPClient(loop=self.loop) if not self._http else self._http
+        http = self._http or HTTPClient(loop=self.loop)
         for data in (await http.get_artist_releases(self.id))['results']:
             release = Release(loop=self.loop, http=self._http, **data)
             self.items.put_nowait(release)

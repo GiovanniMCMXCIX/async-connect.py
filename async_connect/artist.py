@@ -49,8 +49,8 @@ class Artist:
     """
 
     __slots__ = (
-        'id', 'name', 'vanity_uri', 'profile_image_id', 'profile_image_url', 'about', 'bookings',
-        'management_detail', 'urls', 'years', '_releases', '_loop', '__loop', '_http', '__http'
+        'id', 'name', 'vanity_uri', 'profile_image_id', 'profile_image_url', 'about',
+        'bookings', 'management_detail', 'urls', 'years', '_releases', '_loop', '_http'
     )
 
     def __init__(self, **kwargs):
@@ -64,7 +64,7 @@ class Artist:
         self.management_detail = kwargs.pop('managementDetail', None)
         self.urls = kwargs.pop('urls')
         self.years = kwargs.pop('years')
-        self._http = kwargs.pop('http_client', None)
+        self._http = kwargs.pop('http', None)
         self._loop = kwargs.pop('loop', None)
 
     def __eq__(self, other):

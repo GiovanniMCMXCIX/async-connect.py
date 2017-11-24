@@ -39,7 +39,7 @@ from .utils import find
 
 class Client:
     def __init__(self, *, loop=None):
-        self.loop = asyncio.get_event_loop() if not loop else loop
+        self.loop = loop or asyncio.get_event_loop()
         self.http = HTTPClient(loop=self.loop)
         self._is_closed = False
 

@@ -54,7 +54,7 @@ class HTTPClient:
     BROWSE_FILTERS = BROWSE + '/filters'
 
     def __init__(self, *, loop=None):
-        self.loop = asyncio.get_event_loop() if not loop else loop
+        self.loop = loop or asyncio.get_event_loop()
         self.session = aiohttp.ClientSession(loop=self.loop)
         self.download_link_gen = utils.DownloadLinkGenerator()
         user_agent = 'AsyncConnectBot (https://github.com/GiovanniMCMXCIX/async-connect.py {0}) ' \
